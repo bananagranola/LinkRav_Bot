@@ -70,7 +70,7 @@ class Yarn:
 			# photos
 			photos = yarn.get('photos', default_string)
 			for photo in photos:
-				self.photos.append(photo.get('square_url'))
+				self.photos.append(photo.get('medium_url'))
 			
 			return True
 
