@@ -24,7 +24,7 @@ from yarn import *
 # basic logging
 logging.basicConfig()
 logger = logging.getLogger('linkrav_bot')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 	
 # ctrl-c handling
 def signal_handler(signal, frame):
@@ -37,7 +37,7 @@ def is_processed (comment):
 
 	if re.search(comment.author.name, reddit_username, re.IGNORECASE):
 		already_processed = True
-		logger.info("OWN POST: %s", comment.id)
+		logger.debug("OWN POST: %s", comment.id)
 		return already_processed
 
 	for comment_reply in comment.replies:
@@ -46,7 +46,7 @@ def is_processed (comment):
 			# check if bot already commented
 			if re.search(comment_reply.author.name, reddit_username, re.IGNORECASE):
 				already_processed = True
-				logger.info("ALREADY PROCESSED: %s", comment.id)
+				logger.debug("ALREADY PROCESSED: %s", comment.id)
 				return already_processed
 
 # delete comments with lots of downvotes
@@ -56,7 +56,7 @@ def delete_downvotes (user):
 		score = user_comment.score
 		if score < karma_floor:
 			user_comment.delete()
-			logger.DEBUG("DELETING: %s", user_comment.id)
+			logger.info("DELETING: %s", user_comment.id)
 
 placeholder_filename = sys.argv[0] + ".log"
 def get_placeholder (placeholder_filename):
@@ -66,7 +66,7 @@ def get_placeholder (placeholder_filename):
 		placeholder_file.close()
 		return placeholder
 	except IOError, e:
-		logger.error ('IOError: %s', str(e.code))
+		logger.error('IOError: %s', str(e.code))
 		return ""
 def save_placeholder (placeholder_filename, placeholder):
 	try:
@@ -104,7 +104,7 @@ def main(subreddit):
 			# save first retrieved comment as placeholder for next run
 			if new_placeholder == "":
 				new_placeholder = "{}".format(comment.id)
-				logger.info("PLACEHOLDER: %s", new_placeholder)
+				logger.debug("PLACEHOLDER: %s", new_placeholder)
 				save_placeholder(placeholder_filename, new_placeholder)
 
 			match_count = 0
@@ -117,7 +117,7 @@ def main(subreddit):
 				break
 
 			if matches is not None:
-				logger.info ("COMMENT PERMALINK: %s", comment.permalink)
+				logger.debug("COMMENT PERMALINK: %s", comment.permalink)
 
 				# create comments
 				comment_reply = ""
@@ -133,13 +133,14 @@ def main(subreddit):
 
 				# log and post comment
 				if comment_reply != "":
-					logger.info("\n\n-----%s-----\n\n", comment_reply)
+					logger.debug("\n\n-----%s-----\n\n", comment_reply)
 					comment_reply = comment_reply + END_NOTE
 				
 					# handle rate limit error
 					while True:
 						try:
 							comment.reply (comment_reply)
+							logger.info(comment_reply)
 							break
 						except praw.errors.RateLimitExceeded, e:
 							logger.debug("RateLimitExceeded. Sleeping.")
