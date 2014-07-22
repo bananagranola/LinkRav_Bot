@@ -69,7 +69,7 @@ class Ravelry:
 		# pattern
 		pattern_match = re.search(PAT_REGEX, match, re.IGNORECASE)
 		if pattern_match:
-			logger.info("PATTERN: %s", match)
+			logger.debug("PATTERN: %s", match)
 			data = self.get_json(PAT_API.format(pattern_match.group(0)))
 			pattern = Pattern(data)
 			if pattern.fill() == False:
@@ -80,7 +80,7 @@ class Ravelry:
 		# project
 		project_match = re.search(PROJ_REGEX, match, re.IGNORECASE)
 		if project_match:
-			logger.info("PROJECT: %s", match)
+			logger.debug("PROJECT: %s", match)
 			data = self.get_json(PROJ_API.format(project_match.group(0)))
 			project = Project(data)
 			if project.fill(self) == False:
@@ -91,7 +91,7 @@ class Ravelry:
 		# yarn
 		yarn_match = re.search(YARN_REGEX, match, re.IGNORECASE)
 		if yarn_match:
-			logger.info("YARN: %s", match)
+			logger.debug("YARN: %s", match)
 			data = self.get_json(YARN_API.format(yarn_match.group(0)))
 			yarn = Yarn(data)
 			if yarn.fill() == False:
