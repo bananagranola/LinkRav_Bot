@@ -79,17 +79,17 @@ def save_placeholder (placeholder_filename, placeholder):
 
 def main(subreddit):
 
-	# log into ravelry
-	ravelry = Ravelry(ravelry_accesskey, ravelry_personalkey)
-
-	# log in to reddit
-	reddit = praw.Reddit('linkrav_bot by /u/bananagranola')
-	try: reddit.login(reddit_username, reddit_password)
-	except praw.errors.InvalidUserPass, e:
-		logger.error("InvalidUserPass: %s", e.args)
-		sys.exit(1)
-
 	try:
+		# log into ravelry
+		ravelry = Ravelry(ravelry_accesskey, ravelry_personalkey)
+
+		# log in to reddit
+		reddit = praw.Reddit('linkrav_bot by /u/bananagranola')
+		try: reddit.login(reddit_username, reddit_password)
+		except praw.errors.InvalidUserPass, e:
+			logger.error("InvalidUserPass: %s", e.args)
+			sys.exit(1)
+
 		if subreddit is None:
 			subreddit = reddit.get_subreddit(bot_subreddit)
 		else: # for purposes of looping
@@ -148,15 +148,21 @@ def main(subreddit):
 	
 		delete_downvotes(reddit.get_redditor(reddit_username))
 
+	except requests.exceptions.ConnectionError, e:
+		logger.error('ConnectionError: %s', str(e.args))
+		sys.exit(1)
 	except requests.exceptions.HTTPError, e:
 		logger.error('HTTPError: %s', str(e.args))
+		sys.exit(1)
+	except requests.exceptions.Timeout, e:
+		logger.error('Timeout: %s', str(e.args))
 		sys.exit(1)
 	except praw.errors.ClientException, e:
 		logger.error('ClientException: %s', str(e.ERROR_TYPE))
 		sys.exit(1)
 	except praw.errors.APIException, e:
 		logger.error('APIException: %s', str(e.ERROR_TYPE))
-		#sys.exit(1)
+		sys.exit(1)
 
 subreddit = None
 main (subreddit)
