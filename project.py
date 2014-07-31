@@ -62,21 +62,34 @@ class Project:
 			# yarns
 			packs = project.get('packs', default_string)
 			if packs is not None and packs != default_string:
+				yarn_names = []
+				yarn_colors = []
+
 				for pack in packs:
-					
+
 					# yarn name and permalink
 					yarn_comment = ""
 					yarn_name = pack.get('yarn_name', default_string)
 					yarn_id = pack.get('yarn_id', default_string)
-					if yarn_id is not None and yarn_id != default_string:
-						yarn_json = YARN_API.format(yarn_id)
-						yarn_request = ravelry.get_json(YARN_API.format(yarn_id))
-						yarn = yarn_request.get('yarn',default_string)
-						yarn_permalink = yarn.get('permalink',default_string)
-						yarn_permalink = RAV_PERM + YARN_MATCH + yarn_permalink
-						yarn_comment = u"[{}]({})".format(yarn_name, yarn_permalink)
-					elif yarn_name is not None and yarn_name != default_string:
-						yarn_comment = u"{}".format(yarn_name)
+					
+					temp_list = [i[0] for i in yarn_names]
+					if yarn_id in temp_list and yarn_id is not None:
+						yarn_index = temp_list.index(yarn_id)
+					else:
+						if yarn_id is not None and yarn_id != default_string:
+							yarn_json = YARN_API.format(yarn_id)
+							yarn_request = ravelry.get_json(YARN_API.format(yarn_id))
+							yarn = yarn_request.get('yarn',default_string)
+							yarn_permalink = yarn.get('permalink',default_string)
+							yarn_permalink = RAV_PERM + YARN_MATCH + yarn_permalink
+							yarn_comment = u"[{}]({})".format(yarn_name, yarn_permalink)
+						elif yarn_name is not None and yarn_name != default_string:
+							yarn_comment = u"{}".format(yarn_name)
+						else:
+							continue
+						yarn_names.append((yarn_id, yarn_comment))
+						yarn_index = len(yarn_names)-1
+						yarn_colors.append([])
 					
 					# colorway or color family
 					color_comment = pack.get('colorway', default_string)
@@ -85,13 +98,15 @@ class Project:
 						if color_families_id is not None and color_families_id != default_string:
 							color_families = ravelry.get_json("https://api.ravelry.com/color_families.json").get('color_families')
 							color_comment = color_families[color_families_id - 1].get('name', default_string)
+					yarn_colors[yarn_index].append(color_comment)
 					
-					# format yarn with color if it exists
-					if yarn_comment is not None and yarn_comment != "":
-						if color_comment is not None and color_comment != "":
-							self.yarns.append(u"{} in {}".format(yarn_comment, color_comment))
-						else:
-							self.yarns.append(u"{}".format(yarn_comment))
+				# format yarn with color if it exists
+				for id, name in yarn_names:
+					colors = ""
+					yarn_index = [i[0] for i in yarn_names].index(id)
+					for color in yarn_colors[yarn_index]:
+						colors+=(u"{}, ".format(color))
+					self.yarns.append(u"{} in {}".format(name, colors))
 
 			# details
 			self.status = project.get('status_name', default_string)
@@ -115,6 +130,7 @@ class Project:
 
 		yarns_comment = ""
 		for yarn in self.yarns:
+			yarn = yarn[:-2]
 			yarns_comment += u" {}.".format(yarn)
 
 		photos_comment = ""
@@ -122,11 +138,11 @@ class Project:
 		for photo in self.photos:
 			photos_comment += u" [{}]({})".format(i, photo)
 			i += 1
-			if i >= max_photos + 1:
-				break
 
 		comment = u"**PROJECT:** [{}]({}) by [{}]({})\n\n".format(self.name, self.permalink, self.username, self.user_permalink)
-		comment += u"* Pattern: {} | Yarn(s):{} | Photo(s):{}\n".format(self.pattern, yarns_comment, photos_comment)
+		comment += u"* Pattern: {}\n".format(self.pattern)
+		comment += u"* Yarn(s):{}\n".format(yarns_comment)
+		comment += u"* Photo(s):{}\n".format(photos_comment)
 		comment += u"* Started: {} | Status: {} | Completed: {}\n\n".format(self.started, self.status, self.completed)
   
 		return comment.encode('utf-8')

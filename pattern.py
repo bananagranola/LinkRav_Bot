@@ -121,8 +121,11 @@ class Pattern:
 				break
 
 		comment = u"**PATTERN:** [{}]({}) by [{}]({})\n\n".format(self.name, self.permalink, self.author, self.author_permalink)
-		comment += u"* Category:{} | Needle(s):{} | Photo(s):{}\n".format(categories_comment, needles_comment, photos_comment)
-		comment += u"* Price: {} | Weight: {} | Gauge: {} | Yardage: {}\n".format(self.price, self.yarn_weight, self.gauge, self.yardage)
+		comment += u"* Category:{}\n".format(categories_comment)
+		comment += u"* Photo(s):{}\n".format(photos_comment)
+		comment += u"* Price: {}\n".format(self.price)
+		comment += u"* Needle(s):{}\n".format(needles_comment)
+		comment += u"* Weight: {} | Gauge: {} | Yardage: {}\n".format(self.yarn_weight, self.gauge, self.yardage)
 		comment += u"* Difficulty: {:.2f} | Projects: {} | Rating: {:.2f}\n\n".format(self.difficulty, self.projects, self.rating)
 
 		return comment.encode('utf-8')

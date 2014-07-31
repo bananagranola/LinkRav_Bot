@@ -95,8 +95,10 @@ class Yarn:
 				break
 
 		comment = u"**YARN:** [{}]({}) by [{}]({})\n\n".format(self.name, self.permalink, self.yarn_company, self.yarn_company_permalink)
-		comment += u"* Fiber(s):{} | Photo(s):{}\n".format(yarn_fibers_comment, photos_comment)
-		comment += u"* Weight: {} | Grams: {} | Yardage: {} | MW: {} | Rating: {}\n\n".format(self.yarn_weight, self.grams, self.yardage, self.machine_washable, self.rating)
+		comment += u"* Fiber(s):{} | MW: {}\n".format(yarn_fibers_comment, self.machine_washable)
+		comment += u"* Photo(s):{}\n".format(photos_comment)
+		comment += u"* Weight: {} | Grams: {} | Yardage: {}\n".format(self.yarn_weight, self.grams, self.yardage)
+		comment += u"* Rating: {}\n\n".format(self.rating)
 
 		return comment.encode('utf-8')
 
