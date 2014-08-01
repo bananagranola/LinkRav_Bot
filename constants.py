@@ -25,6 +25,6 @@ PAT_API = RAV_API + "patterns/{}.json"
 PROJ_API = RAV_API + "projects/{}.json"
 YARN_API = RAV_API + "yarns/{}.json"
 
-END_NOTE = "*I am a bot that posts Ravelry information. I am on a temporary trial. Details about me are [here](http://www.reddit.com/r/knitting/comments/25pw9s/linkrav_bot_trial_going_live/). If I misbehave, please blame /u/bananagranola and PM her or a mod immediately.*"
+END_NOTE = "*To call me, put LinkRav in your post! Details are [here](http://www.reddit.com/r/knitting/comments/25pw9s/linkrav_bot_trial_going_live/).*"
 
 INVALID_NOTE = "~~{}~~\n\n"
