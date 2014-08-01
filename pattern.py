@@ -117,8 +117,6 @@ class Pattern:
 		for photo in self.photos:
 			photos_comment += u" [{}]({})".format(i, photo)
 			i += 1
-			if i >= max_photos + 1:
-				break
 
 		comment = u"**PATTERN:** [{}]({}) by [{}]({})\n\n".format(self.name, self.permalink, self.author, self.author_permalink)
 		comment += u"* Category:{}\n".format(categories_comment)
