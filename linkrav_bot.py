@@ -128,8 +128,6 @@ def main(subreddit):
 					else:
 						comment_reply += match_string
 						match_count += 1
-						if match_count >= max_links:
-							break
 
 				# log and post comment
 				if comment_reply != "":
