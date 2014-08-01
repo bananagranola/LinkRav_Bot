@@ -98,7 +98,8 @@ def main(subreddit):
 		old_placeholder = get_placeholder (placeholder_filename)
 		new_placeholder = ""
 		#comments = subreddit.get_comments(limit = comments_limit, place_holder = old_placeholder)
-		comments = subreddit.get_comments(limit = comments_limit)
+		#comments = subreddit.get_comments(limit = comments_limit)
+		comments = subreddit.get_comments()
 		for comment in comments:
 			
 			# save first retrieved comment as placeholder for next run
