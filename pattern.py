@@ -52,13 +52,12 @@ class Pattern:
 			# categories
 			pattern_categories = pattern.get('pattern_categories', default_string)
 			if pattern_categories is not None and pattern_categories != default_string:
-				for pattern_category in pattern_categories:
-					parent = pattern_category.get('parent')
-					while parent != None:
-						category_name = parent.get('name')
-						if category_name != "Categories":
-							self.categories.insert (0, category_name)
-						parent = parent.get('parent')
+				pattern_category = pattern_categories[0]
+				while pattern_category is not None:
+					category_name = pattern_category.get('name')
+					if category_name != "Categories":
+						self.categories.insert (0, category_name)
+					pattern_category = pattern_category.get('parent')
 
 			# needles
 			pattern_needle_sizes = pattern.get('pattern_needle_sizes', default_string)
