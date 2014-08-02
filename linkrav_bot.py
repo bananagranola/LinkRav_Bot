@@ -24,7 +24,7 @@ from yarn import *
 # basic logging
 logging.basicConfig()
 logger = logging.getLogger('linkrav_bot')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 	
 # ctrl-c handling
 def signal_handler(signal, frame):
@@ -58,25 +58,6 @@ def delete_downvotes (user):
 			user_comment.delete()
 			logger.info("DELETING: %s", user_comment.id)
 
-placeholder_filename = sys.argv[0] + ".log"
-def get_placeholder (placeholder_filename):
-	try:
-		placeholder_file = open (placeholder_filename, 'w+')
-		placeholder = set (line.strip() for line in placeholder_file)
-		placeholder_file.close()
-		return placeholder
-	except IOError, e:
-		logger.error('IOError: %s', str(e.code))
-		return ""
-def save_placeholder (placeholder_filename, placeholder):
-	try:
-		placeholder_file = open (placeholder_filename, 'w+')
-		placeholder_file.write(placeholder)
-		placeholder_file.close()
-	except IOError, e:
-		logger.error('IOError: %s', str(e.code))
-		return False
-
 def main(subreddit):
 
 	try:
@@ -95,17 +76,8 @@ def main(subreddit):
 		else: # for purposes of looping
 			subreddit.refresh()
 
-		old_placeholder = get_placeholder (placeholder_filename)
-		new_placeholder = ""
-		#comments = subreddit.get_comments(limit = comments_limit, place_holder = old_placeholder)
 		comments = subreddit.get_comments(limit = comments_limit)
 		for comment in comments:
-
-			# save first retrieved comment as placeholder for next run
-			if new_placeholder == "":
-				new_placeholder = "{}".format(comment.id)
-				logger.debug("PLACEHOLDER: %s", new_placeholder)
-				save_placeholder(placeholder_filename, new_placeholder)
 
 			match_count = 0
 			if re.search('.*LinkRav.*', comment.body, re.IGNORECASE):
