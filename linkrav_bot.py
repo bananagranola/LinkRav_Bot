@@ -24,7 +24,7 @@ from yarn import *
 # basic logging
 logging.basicConfig()
 logger = logging.getLogger('linkrav_bot')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 	
 # ctrl-c handling
 def signal_handler(signal, frame):
@@ -98,10 +98,9 @@ def main(subreddit):
 		old_placeholder = get_placeholder (placeholder_filename)
 		new_placeholder = ""
 		#comments = subreddit.get_comments(limit = comments_limit, place_holder = old_placeholder)
-		#comments = subreddit.get_comments(limit = comments_limit)
-		comments = subreddit.get_comments()
+		comments = subreddit.get_comments(limit = comments_limit)
 		for comment in comments:
-			
+
 			# save first retrieved comment as placeholder for next run
 			if new_placeholder == "":
 				new_placeholder = "{}".format(comment.id)
