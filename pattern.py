@@ -105,7 +105,8 @@ class Pattern:
 
 		categories_comment = ""
 		for category in self.categories:
-			categories_comment += u" {}.".format(category)
+			categories_comment += u" {} -> ".format(category)
+		categories_comment = categories_comment[:-4]
 
 		needles_comment = ""
 		for needle in self.needles:
