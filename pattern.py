@@ -111,6 +111,8 @@ class Pattern:
 		needles_comment = ""
 		for needle in self.needles:
 			needles_comment += u" {}.".format(needle)
+		if needles_comment == "":
+			needles_comment = " None"
 
 		photos_comment = ""
 		i = 1
