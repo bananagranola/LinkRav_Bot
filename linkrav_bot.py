@@ -58,27 +58,30 @@ def delete_downvotes (user):
 			user_comment.delete()
 			logger.info("DELETING: %s", user_comment.id)
 
+# process comments
 def process_comment (ravelry, comment):
-	match_count = 0
+	# check if comment called linkrav
 	if re.search('.*LinkRav.*', comment.body, re.IGNORECASE):
 		matches = re.findall(RAV_MATCH, comment.body, re.IGNORECASE)
 	else:
 		return ""
 
+	# check if previously processed
 	if is_processed (comment) == True:
 		return ""
 
+	# iterate through matches
 	if matches is not None:
 		logger.debug("COMMENT PERMALINK: %s", comment.permalink)
 
-		# create comments
+		# append to comments
 		comment_reply = ""
 		for match in matches:
 			match_string = ravelry.url_to_string (match)
 			if match_string is not None:
 				comment_reply += match_string
-				match_count += 1
 
+	# return comment text
 	return comment_reply
 
 def main(subreddit):
@@ -94,12 +97,16 @@ def main(subreddit):
 			logger.error("InvalidUserPass: %s", e.args)
 			sys.exit(1)
 
+		# retrieve subreddit
 		if subreddit is None:
 			subreddit = reddit.get_subreddit(bot_subreddit)
 		else: # for purposes of looping
 			subreddit.refresh()
 
+		# retrieve comments
 		comments = subreddit.get_comments(limit = comments_limit)
+		
+		# iterate through comments
 		for comment in comments:
 
 			# process comment

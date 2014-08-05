@@ -6,7 +6,7 @@ import praw
 import sys
 
 from auth_my import *
-from ravelry import *
+from ravelry import Ravelry
 from linkrav_bot import process_comment
 
 def main():
