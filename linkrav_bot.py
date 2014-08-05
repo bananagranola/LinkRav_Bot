@@ -58,6 +58,29 @@ def delete_downvotes (user):
 			user_comment.delete()
 			logger.info("DELETING: %s", user_comment.id)
 
+def process_comment (ravelry, comment):
+	match_count = 0
+	if re.search('.*LinkRav.*', comment.body, re.IGNORECASE):
+		matches = re.findall(RAV_MATCH, comment.body, re.IGNORECASE)
+	else:
+		return ""
+
+	if is_processed (comment) == True:
+		return ""
+
+	if matches is not None:
+		logger.debug("COMMENT PERMALINK: %s", comment.permalink)
+
+		# create comments
+		comment_reply = ""
+		for match in matches:
+			match_string = ravelry.url_to_string (match)
+			if match_string is not None:
+				comment_reply += match_string
+				match_count += 1
+
+	return comment_reply
+
 def main(subreddit):
 
 	try:
@@ -79,42 +102,23 @@ def main(subreddit):
 		comments = subreddit.get_comments(limit = comments_limit)
 		for comment in comments:
 
-			match_count = 0
-			if re.search('.*LinkRav.*', comment.body, re.IGNORECASE):
-				matches = re.findall(RAV_MATCH, comment.body, re.IGNORECASE)
-			else:
-				continue
+			# process comment
+			comment_reply = process_comment (ravelry, comment)
 
-			if is_processed (comment) == True:
-				break
-
-			if matches is not None:
-				logger.debug("COMMENT PERMALINK: %s", comment.permalink)
-
-				# create comments
-				comment_reply = ""
-				for match in matches:
-					match_string = ravelry.url_to_string (match)
-					if match_string == None:
-						comment_reply += INVALID_NOTE.format(match)
-					else:
-						comment_reply += match_string
-						match_count += 1
-
-				# log and post comment
-				if comment_reply != "":
-					logger.debug("\n\n-----%s-----\n\n", comment_reply)
-					comment_reply = comment_reply + END_NOTE
-				
-					# handle rate limit error
-					while True:
-						try:
-							comment.reply (comment_reply)
-							logger.info(comment_reply)
-							break
-						except praw.errors.RateLimitExceeded, e:
-							logger.debug("RateLimitExceeded. Sleeping.")
-							time.sleep(60)
+			# log and post comment
+			if comment_reply != "":
+				logger.debug("\n\n-----%s-----\n\n", comment_reply)
+				comment_reply = comment_reply + END_NOTE
+			
+				# handle rate limit error
+				while True:
+					try:
+						comment.reply (comment_reply)
+						logger.info(comment_reply)
+						break
+					except praw.errors.RateLimitExceeded, e:
+						logger.debug("RateLimitExceeded. Sleeping.")
+						time.sleep(60)
 	
 		delete_downvotes(reddit.get_redditor(reddit_username))
 

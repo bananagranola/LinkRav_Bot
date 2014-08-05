@@ -26,5 +26,3 @@ PROJ_API = RAV_API + "projects/{}.json"
 YARN_API = RAV_API + "yarns/{}.json"
 
 END_NOTE = "*To call me, put LinkRav in your post! Details are [here](http://www.reddit.com/r/knitting/comments/25pw9s/linkrav_bot_trial_going_live/).*"
-
-INVALID_NOTE = "~~{}~~\n\n"
