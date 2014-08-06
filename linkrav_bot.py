@@ -120,8 +120,8 @@ def main(subreddit):
 				# handle rate limit error
 				while True:
 					try:
-						comment.reply (comment_reply)
-						logger.info(comment_reply)
+						reply = comment.reply (comment_reply)
+						logger.info(reply.permalink)
 						break
 					except praw.errors.RateLimitExceeded, e:
 						logger.debug("RateLimitExceeded. Sleeping.")
