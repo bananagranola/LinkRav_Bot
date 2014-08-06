@@ -92,21 +92,26 @@ class Project:
 						yarn_colors.append([])
 					
 					# colorway or color family
-					color_comment = pack.get('colorway', default_string)
+					color_comment = pack.get('colorway', "")
 					if color_comment is None or color_comment == default_string or color_comment == "":
 						color_families_id = pack.get('color_family_id', default_string)
 						if color_families_id is not None and color_families_id != default_string:
 							color_families = ravelry.get_json("https://api.ravelry.com/color_families.json").get('color_families')
-							color_comment = color_families[color_families_id - 1].get('name', default_string)
-					yarn_colors[yarn_index].append(color_comment)
+							color_comment = color_families[color_families_id - 1].get('name', "")
+					if color_comment != "":
+						yarn_colors[yarn_index].append(color_comment)
 					
-				# format yarn with color if it exists
+				# format yarn, with color if it exists
 				for id, name in yarn_names:
 					colors = ""
 					yarn_index = [i[0] for i in yarn_names].index(id)
 					for color in yarn_colors[yarn_index]:
 						colors+=(u"{}, ".format(color))
-					self.yarns.append(u"{} in {}".format(name, colors))
+
+					if colors != "":
+						self.yarns.append(u"{} in {}".format(name, colors))
+					else:
+						self.yarns.append(u"{}".format(name))
 
 			# details
 			self.status = project.get('status_name', default_string)
@@ -130,7 +135,8 @@ class Project:
 
 		yarns_comment = ""
 		for yarn in self.yarns:
-			yarn = yarn[:-2]
+			if yarn[-2:] == ", ":
+				yarn = yarn[:-2]
 			yarns_comment += u" {}.".format(yarn)
 
 		photos_comment = ""
