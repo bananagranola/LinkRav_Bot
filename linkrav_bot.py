@@ -81,6 +81,11 @@ def process_comment (ravelry, comment):
 			if match_string is not None:
 				comment_reply += match_string
 
+	# log and post comment
+	if comment_reply != "":
+		logger.debug("\n\n-----%s-----\n\n", comment_reply)
+		comment_reply = comment_reply + END_NOTE
+
 	# return comment text
 	return comment_reply
 
@@ -112,12 +117,8 @@ def main(subreddit):
 			# process comment
 			comment_reply = process_comment (ravelry, comment)
 
-			# log and post comment
+			# post, handling rate limit error
 			if comment_reply != "":
-				logger.debug("\n\n-----%s-----\n\n", comment_reply)
-				comment_reply = comment_reply + END_NOTE
-			
-				# handle rate limit error
 				while True:
 					try:
 						reply = comment.reply (comment_reply)
