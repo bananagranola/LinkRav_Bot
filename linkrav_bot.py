@@ -56,7 +56,7 @@ def delete_downvotes (user):
 		score = user_comment.score
 		if score < karma_floor:
 			user_comment.delete()
-			logger.info("DELETING: %s", user_comment.id)
+			logger.debug("DELETING: %s", user_comment.id)
 
 # process comments
 def process_comment (ravelry, comment):
