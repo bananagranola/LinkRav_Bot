@@ -91,6 +91,8 @@ class Yarn:
 		for photo in self.photos:
 			photos_comment += u" [{}]({})".format(i, photo)
 			i += 1
+			if i > 5:
+				break
 
 		comment = u"**YARN:** [{}]({}) by [{}]({})\n\n".format(self.name, self.permalink, self.yarn_company, self.yarn_company_permalink)
 		comment += u"* Fiber(s):{} | MW: {}\n".format(yarn_fibers_comment, self.machine_washable)

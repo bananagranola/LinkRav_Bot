@@ -144,6 +144,8 @@ class Project:
 		for photo in self.photos:
 			photos_comment += u" [{}]({})".format(i, photo)
 			i += 1
+			if i > max_photos:
+				break
 
 		comment = u"**PROJECT:** [{}]({}) by [{}]({})\n\n".format(self.name, self.permalink, self.username, self.user_permalink)
 		comment += u"* Pattern: {}\n".format(self.pattern)

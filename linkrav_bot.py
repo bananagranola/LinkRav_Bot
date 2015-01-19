@@ -74,6 +74,8 @@ def process_comment (ravelry, comment):
 	if matches is not None:
 		logger.debug("COMMENT PERMALINK: %s", comment.permalink)
 
+		matches = set(matches)
+		
 		# append to comments
 		comment_reply = ""
 		for match in matches:
@@ -141,6 +143,9 @@ def main(subreddit):
 		sys.exit(1)
 	except praw.errors.ClientException, e:
 		logger.error('ClientException: %s', str(e.ERROR_TYPE))
+		sys.exit(1)
+	except praw.errors.ExceptionList, e:
+		logger.error('ExceptionList: %s', str(e.errors))
 		sys.exit(1)
 	except praw.errors.APIException, e:
 		logger.error('APIException: %s', str(e.ERROR_TYPE))
