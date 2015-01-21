@@ -77,11 +77,12 @@ def process_comment (ravelry, comment):
 		matches = set(matches)
 		
 		# append to comments
-		comment_reply = ""
+		comment_reply = "#####&#009;\n######&#009;\n####&#009;\n"
 		for match in matches:
 			match_string = ravelry.url_to_string (match)
 			if match_string is not None:
 				comment_reply += match_string
+				comment_reply += "*****\n"
 
 	# log and post comment
 	if comment_reply != "":
@@ -151,6 +152,7 @@ def main(subreddit):
 		logger.error('APIException: %s', str(e.ERROR_TYPE))
 		sys.exit(1)
 
-subreddit = None
-main (subreddit)
+if __name__ == "__main__":
+	subreddit = None
+	main (subreddit)
 
