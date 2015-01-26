@@ -77,7 +77,6 @@ def process_comment (ravelry, comment):
 		matches = set(matches)
 		
 		# append to comments
-		comment_reply = "#####&#009;\n######&#009;\n####&#009;\n"
 		for match in matches:
 			match_string = ravelry.url_to_string (match)
 			if match_string is not None:
@@ -86,8 +85,8 @@ def process_comment (ravelry, comment):
 
 	# log and post comment
 	if comment_reply != "":
+		comment_reply = START_NOTE + comment_reply + END_NOTE
 		logger.debug("\n\n-----%s-----\n\n", comment_reply)
-		comment_reply = comment_reply + END_NOTE
 
 	# return comment text
 	return comment_reply
