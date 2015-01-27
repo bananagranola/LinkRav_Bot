@@ -80,7 +80,7 @@ def process_comment (ravelry, comment):
 		for match in matches:
 			match_string = ravelry.url_to_string (match)
 			if match_string is not None:
-				comment_reply += match_string
+				comment_reply = match_string
 				comment_reply += "*****\n"
 
 	# log and post comment
