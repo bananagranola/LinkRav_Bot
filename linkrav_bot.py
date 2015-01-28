@@ -60,6 +60,7 @@ def delete_downvotes (user):
 
 # process comments
 def process_comment (ravelry, comment):
+	comment_reply = ""
 	# check if comment called linkrav
 	if re.search('.*LinkRav.*', comment.body, re.IGNORECASE):
 		matches = re.findall(RAV_MATCH, comment.body, re.IGNORECASE)
@@ -80,7 +81,7 @@ def process_comment (ravelry, comment):
 		for match in matches:
 			match_string = ravelry.url_to_string (match)
 			if match_string is not None:
-				comment_reply = match_string
+				comment_reply += match_string
 				comment_reply += "*****\n"
 
 	# log and post comment
