@@ -128,7 +128,7 @@ class Pattern:
 		comment += u"* Category:{}\n".format(categories_comment)
 		comment += u"* Photo(s):{}\n".format(photos_comment)
 		comment += u"* Price: {}\n".format(self.price)
-		comment += u"* Needle(s):{}\n".format(needles_comment)
+		comment += u"* Needle/Hook(s):{}\n".format(needles_comment)
 		comment += u"* Weight: {} | Gauge: {} | Yardage: {}\n".format(self.yarn_weight, self.gauge, self.yardage)
 		comment += u"* Difficulty: {:.2f} | Projects: {} | Rating: {:.2f}\n\n".format(self.difficulty, self.projects, self.rating)
 
