@@ -32,13 +32,16 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 # check if comment has already been processed
-def is_processed (comment):
+def is_processed (reddit, comment):
 	already_processed = False
 
 	if re.search(comment.author.name, reddit_username, re.IGNORECASE):
 		already_processed = True
 		logger.debug("OWN POST: %s", comment.id)
 		return already_processed
+
+	# hacky workaround to populate child replies
+	comment = reddit.get_submission(comment.permalink).comments[0]
 
 	for comment_reply in comment.replies:
 		# check if direct child 
@@ -59,7 +62,7 @@ def delete_downvotes (user):
 			logger.debug("DELETING: %s", user_comment.id)
 
 # process comments
-def process_comment (ravelry, comment):
+def process_comment (ravelry, reddit, comment):
 	comment_reply = ""
 	# check if comment called linkrav
 	if re.search('.*LinkRav.*', comment.body, re.IGNORECASE):
@@ -68,7 +71,7 @@ def process_comment (ravelry, comment):
 		return ""
 
 	# check if previously processed
-	if is_processed (comment) == True:
+	if is_processed (reddit, comment) == True:
 		return ""
 
 	# iterate through matches
@@ -99,7 +102,7 @@ def main(subreddit):
 		ravelry = Ravelry(ravelry_accesskey, ravelry_personalkey)
 
 		# log in to reddit
-		reddit = praw.Reddit('linkrav_bot by /u/bananagranola')
+		reddit = praw.Reddit('linkrav by /u/bananagranola')
 		try: reddit.login(reddit_username, reddit_password)
 		except praw.errors.InvalidUserPass, e:
 			logger.error("InvalidUserPass: %s", e.args)
@@ -118,7 +121,7 @@ def main(subreddit):
 		for comment in comments:
 
 			# process comment
-			comment_reply = process_comment (ravelry, comment)
+			comment_reply = process_comment (ravelry, reddit, comment)
 
 			# post, handling rate limit error
 			if comment_reply != "":

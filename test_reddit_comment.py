@@ -12,8 +12,8 @@ from linkrav_bot import process_comment
 def main():
 
 	ravelry = Ravelry (ravelry_accesskey, ravelry_personalkey)
-	reddit = praw.Reddit("LinkRav_Bot by /u/banangranola")
-	
+	reddit = praw.Reddit("LinkRav by /u/banangranola")
+
 	arg = sys.argv[1]
 	if "http" in arg:
 		arg = arg[-7:]
@@ -21,6 +21,6 @@ def main():
 	id = "t1_" + arg
 	comment = reddit.get_info(thing_id = id)
 	
-	print process_comment(ravelry, comment)
+	process_comment(ravelry, reddit, comment)
 
 main()
