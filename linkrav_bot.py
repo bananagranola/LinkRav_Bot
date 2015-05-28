@@ -24,7 +24,7 @@ from yarn import *
 # basic logging
 logging.basicConfig()
 logger = logging.getLogger('linkrav_bot')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 	
 # ctrl-c handling
 def signal_handler(signal, frame):
@@ -43,9 +43,15 @@ def delete_downvotes (user):
 # process comments
 def process_comment (ravelry, comment):
 	comment_reply = ""
-	matches = re.findall(RAV_MATCH, comment.body, re.IGNORECASE)
+	
+	# ignore comments that didn't call LinkRav
+	if re.search('.*LinkRav.*', comment.body, re.IGNORECASE):
+		matches = re.findall(RAV_MATCH, comment.body, re.IGNORECASE)
+	else:
+		logger.debug("COMMENT IGNORED: %s", comment.permalink)
+		return ""
 
-	# iterate through matches
+	# iterate through comments that did call LinkRav
 	if matches is not None:
 		logger.debug("COMMENT PERMALINK: %s", comment.permalink)
 
@@ -78,7 +84,7 @@ def main():
 
 		# retrieve comments
 		comments = reddit.get_unread()
-		
+
 		# iterate through comments
 		for comment in comments:
 
