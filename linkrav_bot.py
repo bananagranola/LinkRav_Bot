@@ -40,6 +40,13 @@ def delete_downvotes (user):
 			user_comment.delete()
 			logger.debug("DELETING: %s", user_comment.id)
 
+def uniq (input):
+	output = []
+	for x in input:
+		if x not in output:
+			output.append(x)
+	return output
+
 # process comments
 def process_comment (ravelry, comment):
 	comment_reply = ""
@@ -55,7 +62,7 @@ def process_comment (ravelry, comment):
 	if matches is not None:
 		logger.debug("COMMENT PERMALINK: %s", comment.permalink)
 
-		matches = set(matches)
+		matches = uniq(matches)
 		
 		# append to comments
 		for match in matches:

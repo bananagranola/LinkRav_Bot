@@ -21,6 +21,6 @@ def main():
 	id = "t1_" + arg
 	comment = reddit.get_info(thing_id = id)
 	
-	process_comment(ravelry, reddit, comment)
+	process_comment(ravelry, comment)
 
 main()
