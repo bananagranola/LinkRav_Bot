@@ -7,7 +7,9 @@ import logging
 import re
 try: import simplejson as json
 except ImportError: import json
-import urllib2
+import urllib3
+
+import requests
 
 from constants import *
 from pattern import *
@@ -24,47 +26,17 @@ class Ravelry:
 		self.personalkey = personalkey
 
 	def get_json(self, json_url):
-
-		request = urllib2.Request(json_url)
-		base64string = base64.encodestring('%s:%s' % (self.accesskey, self.personalkey)).replace('\n', '')
-		request.add_header("Authorization", "Basic %s" % base64string)
-
-		try: 
-			requested = urllib2.urlopen(request)
-		except urllib2.HTTPError, e:
-			logger.error ('HTTPError: %s. URL: %s', str(e.args), json_url)
-			return None
-
-		try: 
-			loaded = json.load(requested)
-		except ValueError, e:
-			logger.error ('ValueError: %s. URL: %s', str(e.args), json_url)
-			return None
-	
+		r = requests.get(json_url, auth=(self.accesskey, self.personalkey))
+		loaded = json.loads(r.content)
 		return loaded
 
 	def get_redirect(self, url):
-		if re.search (".*http://.*", url, re.IGNORECASE) == None:
-			url = "http://" + url
-		
-		try:
-			req = urllib2.Request (url)
-			res = urllib2.urlopen(req)
-			url = res.geturl()
-		except urllib2.HTTPError, e:
-			logger.error('HTTPError: %s. URL: %s', str(e.args), url)
-			return None
-		except ValueError, e:
-			logger.error('ValueError: %s. URL: %s', str (e.args), url)
-
-		logger.debug("REDIRECTING: %s", url)
-		return url
+		r = requests.get(url)
+		return r.url
 
 	def url_to_string (self, match):
 
-		# if link shortened, get redirected full url
-		if re.search('.*ravel.me.*', match, re.IGNORECASE) != None:
-			match = self.get_redirect(match)
+		match = self.get_redirect(match)
 
 		# pattern
 		pattern_match = re.search(PAT_REGEX, match, re.IGNORECASE)
