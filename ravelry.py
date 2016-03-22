@@ -5,9 +5,9 @@
 import base64
 import logging
 import re
+import requests
 try: import simplejson as json
 except ImportError: import json
-import urllib3
 
 import requests
 
