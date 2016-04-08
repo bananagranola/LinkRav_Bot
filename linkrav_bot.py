@@ -86,8 +86,8 @@ def main():
 		ravelry = Ravelry(ravelry_accesskey, ravelry_personalkey)
 
 		# log in to reddit
-		reddit = praw.Reddit('linkrav by /u/bananagranola')
-		reddit.login(reddit_username, reddit_password)
+		reddit = praw.Reddit('linkrav by /u/bananagranola', check_for_updates = False)
+		reddit.login(reddit_username, reddit_password, disable_warning=True)
 
 		# retrieve comments
 		comments = reddit.get_unread()
@@ -97,19 +97,10 @@ def main():
 
 			# process comment
 			comment_reply = process_comment (ravelry, comment)
-			comment.mark_as_read()
+			
+                        if comment_reply == "":
+                            comment.mark_as_read()
 
-			# post, handling rate limit error
-			if comment_reply != "":
-				while True:
-					try:
-						reply = comment.reply (comment_reply)
-						logger.info(reply.permalink)
-						break
-					except praw.errors.RateLimitExceeded, e:
-						logger.debug("RateLimitExceeded. Sleeping.")
-						time.sleep(60)
-	
 		delete_downvotes(reddit.get_redditor(reddit_username))
 
 	except requests.exceptions.ConnectionError, e:

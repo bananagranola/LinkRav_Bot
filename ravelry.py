@@ -31,8 +31,10 @@ class Ravelry:
 		return loaded
 
 	def get_redirect(self, url):
-		r = requests.get(url)
-		return r.url
+                if url.startswith("http://") == False:
+		    url = "http://" + url
+                r = requests.get(url)
+                return r.url
 
 	def url_to_string (self, match):
 
