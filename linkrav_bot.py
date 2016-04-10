@@ -95,10 +95,14 @@ def main():
 		# iterate through comments
 		for comment in comments:
 
-			# process comment
+			# process comment and submit
 			comment_reply = process_comment (ravelry, comment)
-			
-                        if comment_reply == "":
+                        
+                        if comment_reply != "":
+                            reply = comment.reply (comment_reply)
+                            logger.info(reply.permalink)
+
+                        if reply != None:
                             comment.mark_as_read()
 
 		delete_downvotes(reddit.get_redditor(reddit_username))
