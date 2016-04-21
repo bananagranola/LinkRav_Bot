@@ -97,7 +97,8 @@ def main():
 
 			# process comment and submit
 			comment_reply = process_comment (ravelry, comment)
-                        
+                       
+                        reply = None
                         if comment_reply != "":
                             reply = comment.reply (comment_reply)
                             logger.info(reply.permalink)
