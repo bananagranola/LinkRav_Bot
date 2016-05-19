@@ -27,8 +27,11 @@ class Ravelry:
 
 	def get_json(self, json_url):
 		r = requests.get(json_url, auth=(self.accesskey, self.personalkey))
-		loaded = json.loads(r.content)
-		return loaded
+                if r.content == " ":
+                    return None
+                else:
+                    loaded = json.loads(r.content)
+		    return loaded
 
 	def get_redirect(self, url):
                 if url.startswith("http://") == False:

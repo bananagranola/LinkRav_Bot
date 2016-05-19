@@ -103,8 +103,7 @@ def main():
                             reply = comment.reply (comment_reply)
                             logger.info(reply.permalink)
 
-                        if reply != None:
-                            comment.mark_as_read()
+                        comment.mark_as_read()
 
 		delete_downvotes(reddit.get_redditor(reddit_username))
 
