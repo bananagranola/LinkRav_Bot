@@ -97,12 +97,14 @@ def main():
 			# process comment and submit
 			comment_reply = process_comment (ravelry, comment)
                        
-                        reply = None
-                        if comment_reply != "":
-                            reply = comment.reply (comment_reply)
-                            logger.info(reply.permalink)
+			reply = None
+			if comment_reply != "":
+				reply = comment.reply (comment_reply)
+				logger.info(reply.permalink)
+			else:
+				comment.save()
 
-                        comment.mark_read()
+			comment.mark_as_read()
 
                 delete_downvotes (reddit.redditor(reddit_username))
 
