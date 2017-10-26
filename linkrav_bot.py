@@ -33,7 +33,7 @@ signal.signal(signal.SIGINT, signal_handler)
 
 # delete comments with lots of downvotes
 def delete_downvotes (user):
-	user_comments = user.get_comments(limit = 20)
+	user_comments = user.comments.new(limit = 20)
 	for user_comment in user_comments:
 		score = user_comment.score
 		if score < karma_floor:
@@ -55,12 +55,12 @@ def process_comment (ravelry, comment):
 	if re.search('.*LinkRav.*', comment.body, re.IGNORECASE):
 		matches = re.findall(RAV_MATCH, comment.body, re.IGNORECASE)
 	else:
-		logger.debug("COMMENT IGNORED: %s", comment.permalink)
+		logger.debug("COMMENT IGNORED: %s", comment.submission.url)
 		return ""
 
 	# iterate through comments that did call LinkRav
 	if matches is not None:
-		logger.debug("COMMENT PERMALINK: %s", comment.permalink)
+		logger.debug("COMMENT PERMALINK: %s", comment.submission.url)
 
 		matches = uniq(matches)
 		
@@ -86,11 +86,10 @@ def main():
 		ravelry = Ravelry(ravelry_accesskey, ravelry_personalkey)
 
 		# log in to reddit
-		reddit = praw.Reddit('linkrav by /u/bananagranola', check_for_updates = False)
-		reddit.login(reddit_username, reddit_password, disable_warning=True)
+		reddit = praw.Reddit(username = reddit_username, password = reddit_password, client_id = reddit_clientid, client_secret = reddit_clientsecret, user_agent = "LinkRav_Bot by /u/bananagranola")
 
 		# retrieve comments
-		comments = reddit.get_unread()
+		comments = reddit.inbox.unread()
 
 		# iterate through comments
 		for comment in comments:
@@ -103,9 +102,9 @@ def main():
                             reply = comment.reply (comment_reply)
                             logger.info(reply.permalink)
 
-                        comment.mark_as_read()
+                        comment.mark_read()
 
-		delete_downvotes(reddit.get_redditor(reddit_username))
+                delete_downvotes (reddit.redditor(reddit_username))
 
 	except requests.exceptions.ConnectionError, e:
 		logger.error('ConnectionError: %s', str(e.args))
@@ -116,15 +115,15 @@ def main():
 	except requests.exceptions.Timeout, e:
 		logger.error('Timeout: %s', str(e.args))
 		sys.exit(1)
-	except praw.errors.ClientException, e:
-		logger.error('ClientException: %s', str(e.args))
-		sys.exit(1)
-	except praw.errors.ExceptionList, e:
-		logger.error('ExceptionList: %s', str(e.args))
-		sys.exit(1)
-	except praw.errors.APIException, e:
-		logger.error('APIException: %s', str(e.args))
-		sys.exit(1)
+	#except praw.errors.ClientException, e:
+	#	logger.error('ClientException: %s', str(e.args))
+	#	sys.exit(1)
+	#except praw.errors.ExceptionList, e:
+	#	logger.error('ExceptionList: %s', str(e.args))
+	#	sys.exit(1)
+	#except praw.errors.APIException, e:
+	#	logger.error('APIException: %s', str(e.args))
+	#	sys.exit(1)
 
 if __name__ == "__main__":
 	main()

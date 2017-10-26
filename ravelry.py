@@ -41,7 +41,7 @@ class Ravelry:
 
 	def url_to_string (self, match):
 
-		match = self.get_redirect(match)
+                match = self.get_redirect(match)
 
 		# pattern
 		pattern_match = re.search(PAT_REGEX, match, re.IGNORECASE)
